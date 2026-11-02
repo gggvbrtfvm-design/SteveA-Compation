@@ -12,6 +12,8 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.Level;
 import org.slf4j.Logger;
@@ -130,6 +132,49 @@ public final class SteveAICompanion implements ModInitializer {
             }
             default -> {
                 // Conversation-only response. Unknown actions are never executed.
+            }
+        }
+    }
+
+    private static void buildStarterHouse(Mob builder) {
+        Level level = builder.level();
+        BlockPos origin = BlockPos.containing(builder.getX() + 4, builder.getY(), builder.getZ());
+        int width = 7;
+        int depth = 7;
+        int wallHeight = 3;
+
+        // Clear only the small construction footprint; never replace solid terrain or fluids.
+        for (int x = 0; x < width; x++) {
+            for (int z = 0; z < depth; z++) {
+                for (int y = 1; y <= wallHeight + 1; y++) {
+                    BlockPos p = origin.offset(x, y, z);
+                    if (level.getBlockState(p).isAir() || level.getBlockState(p).canBeReplaced()) {
+                        level.setBlock(p, Blocks.AIR.defaultBlockState(), 3);
+                    }
+                }
+                level.setBlock(origin.offset(x, 0, z), Blocks.OAK_PLANKS.defaultBlockState(), 3);
+            }
+        }
+
+        for (int x = 0; x < width; x++) {
+            for (int z = 0; z < depth; z++) {
+                boolean edge = x == 0 || x == width - 1 || z == 0 || z == depth - 1;
+                if (!edge) continue;
+                for (int y = 1; y <= wallHeight; y++) {
+                    boolean doorway = z == 0 && x == 3 && y <= 2;
+                    boolean window = y == 2 && ((z == 0 && (x == 1 || x == 5))
+                        || (z == depth - 1 && (x == 1 || x == 5))
+                        || (x == 0 && z == 3) || (x == width - 1 && z == 3));
+                    if (doorway) continue;
+                    BlockPos p = origin.offset(x, y, z);
+                    level.setBlock(p, window ? Blocks.GLASS.defaultBlockState()
+                        : Blocks.OAK_PLANKS.defaultBlockState(), 3);
+                }
+            }
+        }
+        for (int x = 0; x < width; x++) {
+            for (int z = 0; z < depth; z++) {
+                level.setBlock(origin.offset(x, wallHeight + 1, z), Blocks.OAK_PLANKS.defaultBlockState(), 3);
             }
         }
     }
