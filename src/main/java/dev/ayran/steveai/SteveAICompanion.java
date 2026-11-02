@@ -53,7 +53,7 @@ public final class SteveAICompanion implements ModInitializer {
             player.sendSystemMessage(Component.literal("Steve zaten yaninda."));
             return Command.SINGLE_SUCCESS;
         }
-        Mob companion = EntityType.ZOMBIE.create(level, EntitySpawnReason.COMMAND);
+        Mob companion = EntityType.VILLAGER.create(level, EntitySpawnReason.COMMAND);
         if (companion == null) {
             player.sendSystemMessage(Component.literal("Steve olusturulamadi."));
             return 0;
@@ -129,6 +129,10 @@ public final class SteveAICompanion implements ModInitializer {
             case "STAY" -> {
                 FOLLOWING.remove(player.getUUID());
                 mob.getNavigation().stop();
+            }
+            case "BUILD_HOUSE" -> {
+                buildStarterHouse(mob);
+                player.sendSystemMessage(Component.literal("Steve baslangic evini insa etti."));
             }
             default -> {
                 // Conversation-only response. Unknown actions are never executed.
