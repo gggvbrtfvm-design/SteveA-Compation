@@ -14,10 +14,13 @@ jobs:
           distribution: temurin
           java-version: '21'
       - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '9.2.1'
       - name: Build
-        run: gradle build
+        run: gradle build --no-daemon
       - name: Upload JAR
         uses: actions/upload-artifact@v4
         with:
           name: SteveAICompanion
           path: build/libs/*.jar
+          if-no-files-found: error
