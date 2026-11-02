@@ -93,7 +93,7 @@ public final class SteveAICompanion implements ModInitializer {
             return 0;
         }
         player.sendSystemMessage(Component.literal("Steve dusunuyor..."));
-        GeminiClient.ask(message).whenComplete((reply, error) -> player.server.execute(() -> {
+        GeminiClient.ask(message).whenComplete((reply, error) -> player.getServer().execute(() -> {
             if (!player.isAlive()) return;
             if (error != null) {
                 LOGGER.warn("Gemini request failed", error);
