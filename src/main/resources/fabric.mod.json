@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "id": "steve_ai_companion",
+  "version": "${version}",
+  "name": "Steve AI Companion",
+  "description": "An experimental companion mod with summon and dismiss commands.",
+  "authors": ["Ayran"],
+  "environment": "*",
+  "entrypoints": { "main": ["dev.ayran.steveai.SteveAICompanion"] },
+  "depends": {
+    "fabricloader": ">=0.18.1",
+    "minecraft": "~1.21.11",
+    "java": ">=21",
+    "fabric-api": "*"
+  }
+}
