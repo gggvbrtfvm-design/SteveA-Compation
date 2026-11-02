@@ -73,7 +73,7 @@ public final class SteveAICompanion implements ModInitializer {
     private static int dismiss(ServerPlayer player) {
         UUID id = COMPANIONS.remove(player.getUUID());
         FOLLOWING.remove(player.getUUID());
-        if (id != null && player.serverLevel().getEntity(id) instanceof Mob mob) {
+        if (id != null && player.level().getEntity(id) instanceof Mob mob) {
             mob.discard();
             player.sendSystemMessage(Component.literal("Steve gitti."));
         } else {
@@ -84,7 +84,7 @@ public final class SteveAICompanion implements ModInitializer {
 
     private static int ask(ServerPlayer player, String message) {
         UUID companionId = COMPANIONS.get(player.getUUID());
-        if (companionId == null || !(player.serverLevel().getEntity(companionId) instanceof Mob)) {
+        if (companionId == null || !(player.level().getEntity(companionId) instanceof Mob)) {
             player.sendSystemMessage(Component.literal("Once /aicall yaz."));
             return 0;
         }
@@ -93,7 +93,7 @@ public final class SteveAICompanion implements ModInitializer {
             return 0;
         }
         player.sendSystemMessage(Component.literal("Steve dusunuyor..."));
-        GeminiClient.ask(message).whenComplete((reply, error) -> player.getServer().execute(() -> {
+        GeminiClient.ask(message).whenComplete((reply, error) -> player.level().getServer().execute(() -> {
             if (!player.isAlive()) return;
             if (error != null) {
                 LOGGER.warn("Gemini request failed", error);
@@ -107,7 +107,7 @@ public final class SteveAICompanion implements ModInitializer {
 
     private static void applyReply(ServerPlayer player, GeminiClient.Reply reply) {
         UUID id = COMPANIONS.get(player.getUUID());
-        if (id == null || !(player.serverLevel().getEntity(id) instanceof Mob mob)) return;
+        if (id == null || !(player.level().getEntity(id) instanceof Mob mob)) return;
         String text = reply.text();
         if (!text.isBlank()) player.sendSystemMessage(Component.literal("Steve: " + text));
         switch (reply.action()) {
@@ -138,7 +138,7 @@ public final class SteveAICompanion implements ModInitializer {
         for (var entry : FOLLOWING.entrySet()) {
             ServerPlayer player = server.getPlayerList().getPlayer(entry.getKey());
             if (player == null) continue;
-            var entity = player.serverLevel().getEntity(COMPANIONS.get(player.getUUID()));
+            var entity = player.level().getEntity(COMPANIONS.get(player.getUUID()));
             if (!(entity instanceof Mob mob) || !mob.isAlive()) continue;
             if (mob.distanceToSqr(player) > 9.0 && mob.getNavigation().isDone()) {
                 mob.getNavigation().moveTo(player, 1.12);
