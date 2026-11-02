@@ -38,7 +38,9 @@ final class GeminiClient {
         com.google.gson.JsonArray contents = new com.google.gson.JsonArray();
         contents.add(content);
         body.add("contents", contents);
-        body.addProperty("generationConfig", "{\"responseMimeType\":\"application/json\"}");
+        JsonObject generationConfig = new JsonObject();
+        generationConfig.addProperty("responseMimeType", "application/json");
+        body.add("generationConfig", generationConfig);
 
         String endpoint = "https://generativelanguage.googleapis.com/v1beta/models/"
             + GeminiConfig.model() + ":generateContent?key=" + GeminiConfig.apiKey();
