@@ -21,7 +21,7 @@ final class GeminiClient {
             You are Steve, a friendly and capable Minecraft companion. The player speaks Turkish.
             Reply in natural, concise Turkish. Return ONLY a JSON object with exactly these keys:
             {"text":"your Turkish response","action":"NONE"}
-            Allowed action values: NONE, FOLLOW, STOP, COME, STAY.
+            Allowed action values: NONE, FOLLOW, STOP, COME, STAY, BUILD_HOUSE.
             Choose FOLLOW when asked to follow, STOP or STAY when asked to wait/stop,
             COME when asked to come here. For building, mining, crafting, combat, or any
             unsupported ability, be honest that this version cannot perform that task yet.
@@ -60,7 +60,7 @@ final class GeminiClient {
                 JsonObject parsed = JsonParser.parseString(raw).getAsJsonObject();
                 String text = parsed.has("text") ? parsed.get("text").getAsString() : "Buradayim.";
                 String action = parsed.has("action") ? parsed.get("action").getAsString() : "NONE";
-                if (!action.matches("FOLLOW|STOP|COME|STAY|NONE")) action = "NONE";
+                if (!action.matches("FOLLOW|STOP|COME|STAY|BUILD_HOUSE|NONE")) action = "NONE";
                 return new Reply(text, action);
             });
     }
