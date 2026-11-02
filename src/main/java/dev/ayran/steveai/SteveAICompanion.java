@@ -4,9 +4,9 @@ import com.mojang.brigadier.Command;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.level.Level;
 import net.minecraft.network.chat.Component;
 import org.slf4j.Logger;
@@ -29,19 +29,19 @@ public final class SteveAICompanion implements ModInitializer {
 
     private static int summon(ServerPlayer player) {
         Level level = player.level();
-        Villager companion = EntityType.VILLAGER.create(level);
+        Mob companion = EntityType.ZOMBIE.create(level, EntitySpawnReason.COMMAND);
         if (companion == null) return 0;
         companion.moveTo(player.getX() + 1.5, player.getY(), player.getZ(), player.getYRot(), 0);
         companion.setCustomName(Component.literal("Steve"));
         companion.setCustomNameVisible(true);
         companion.setPersistenceRequired();
         level.addFreshEntity(companion);
-        player.sendSystemMessage(Component.literal("Steve yaninda! (Ilk prototip: gorunum ve yapay zeka gelistirilecek.)"));
+        player.sendSystemMessage(Component.literal("Steve yaninda! (Gecici prototip karakter.)"));
         return Command.SINGLE_SUCCESS;
     }
 
     private static int dismiss(ServerPlayer player) {
-        var level = player.serverLevel();
+        Level level = player.level();
         int removed = 0;
         for (var entity : level.getEntities(player, player.getBoundingBox().inflate(32))) {
             if (entity instanceof Mob mob && mob.getCustomName() != null && mob.getCustomName().getString().equals("Steve")) {
