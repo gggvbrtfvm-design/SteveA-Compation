@@ -31,7 +31,9 @@ public final class SteveAICompanion implements ModInitializer {
         Level level = player.level();
         Mob companion = EntityType.ZOMBIE.create(level, EntitySpawnReason.COMMAND);
         if (companion == null) return 0;
-        companion.moveTo(player.getX() + 1.5, player.getY(), player.getZ(), player.getYRot(), 0);
+        companion.setPos(player.getX() + 1.5, player.getY(), player.getZ());
+        companion.setYRot(player.getYRot());
+        companion.setYHeadRot(player.getYRot());
         companion.setCustomName(Component.literal("Steve"));
         companion.setCustomNameVisible(true);
         companion.setPersistenceRequired();
